@@ -76,7 +76,6 @@ Cuda V9.0.176 and corresponding cuDnn <br />
 Dlib 18.17.100 <br />
 OpenCV 3.4.1 <br />
 Numpy 1.15.4 + mkl <br />
-pyautogui <br />
 pypiwin32 (Windows only) <br />
 scipy 0.19.1 <br />
 
