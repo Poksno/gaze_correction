@@ -1,0 +1,36 @@
+# Python bytecode and cache directories
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Logs and local files
+*.log
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE files
+.vscode/
+.idea/
+
+# Datasets and model checkpoints
+training/dataset/
+training/code_tf/model_train/ckpt/
+training/code_tf/model_train/pt_ckpt/
+training/generate_training_inputs_from_raw_dataset/training_inputs/
+gaze_correction_system/weights/
+
+# OS files
+.DS_Store
+Thumbs.db
