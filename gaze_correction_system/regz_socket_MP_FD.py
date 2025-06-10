@@ -55,6 +55,12 @@ def get_screen_size():
     if platform.system() == 'Windows':
         return (GetSystemMetrics(0), GetSystemMetrics(1))
     else:
+        if pyautogui:
+            try:
+                w, h = pyautogui.size()
+                return (w, h)
+            except Exception:
+                pass
         root = tk.Tk()
         root.withdraw()
         size = (root.winfo_screenwidth(), root.winfo_screenheight())
@@ -73,10 +79,13 @@ def get_window_rect(title):
             return None
     else:
         if pyautogui:
-            wins = pyautogui.getWindowsWithTitle(title)
-            if wins:
-                w = wins[0]
-                return (w.left, w.top, w.right, w.bottom)
+            try:
+                wins = pyautogui.getWindowsWithTitle(title)
+                if wins:
+                    w = wins[0]
+                    return (w.left, w.top, w.right, w.bottom)
+            except Exception:
+                pass
         return None
 
 
