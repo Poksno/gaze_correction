@@ -96,8 +96,6 @@ def get_window_rect(title):
 # In[ ]:
 
 
-model_dir
-print(Rs)
 
 
 # In[ ]:
