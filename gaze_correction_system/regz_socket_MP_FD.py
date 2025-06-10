@@ -86,6 +86,10 @@ def get_window_rect(title):
                     return (w.left, w.top, w.right, w.bottom)
             except Exception:
                 pass
+            wins = pyautogui.getWindowsWithTitle(title)
+            if wins:
+                w = wins[0]
+                return (w.left, w.top, w.right, w.bottom)
         return None
 
 
