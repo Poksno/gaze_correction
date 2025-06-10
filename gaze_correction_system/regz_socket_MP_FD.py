@@ -14,8 +14,17 @@ import socket
 import struct
 import numpy as np
 import tensorflow as tf
-from win32api import GetSystemMetrics
-import win32gui
+import platform
+
+if platform.system() == 'Windows':
+    from win32api import GetSystemMetrics
+    import win32gui
+else:
+    import tkinter as tk
+    try:
+        import pyautogui
+    except Exception:
+        pyautogui = None
 
 from threading import Thread, Lock
 import multiprocessing as mp
@@ -42,7 +51,42 @@ depth = -50
 # for monitoring
 
 # environment parameter
-Rs = (GetSystemMetrics(0),GetSystemMetrics(1))
+def get_screen_size():
+    if platform.system() == 'Windows':
+        return (GetSystemMetrics(0), GetSystemMetrics(1))
+    else:
+        if pyautogui:
+            try:
+                w, h = pyautogui.size()
+                return (w, h)
+            except Exception:
+                pass
+        root = tk.Tk()
+        root.withdraw()
+        size = (root.winfo_screenwidth(), root.winfo_screenheight())
+        root.destroy()
+        return size
+
+Rs = get_screen_size()
+
+def get_window_rect(title):
+    """Return window rect (left, top, right, bottom) for the given title."""
+    if platform.system() == 'Windows':
+        try:
+            handle = win32gui.FindWindow(None, title)
+            return win32gui.GetWindowRect(handle)
+        except Exception:
+            return None
+    else:
+        if pyautogui:
+            try:
+                wins = pyautogui.getWindowsWithTitle(title)
+                if wins:
+                    w = wins[0]
+                    return (w.left, w.top, w.right, w.bottom)
+            except Exception:
+                pass
+        return None
 
 
 # In[ ]:
@@ -254,14 +298,16 @@ class gaze_redirection_system:
        
     def shifting_angles_estimator(self, R_le, R_re,shared_v,lock):
         # get P_w
+        size_window = (659,528)
         try:
-            tar_win = win32gui.FindWindow(None, "Remote")
-            #left, top, reight, bottom
-            Rw_lt = win32gui.GetWindowRect(tar_win)
-            size_window = (Rw_lt[2]-Rw_lt[0], Rw_lt[3]-Rw_lt[1])
-        except:
-            Rw_lt = [int(Rs[0])-int(size_window[0]/2),int(Rs[1])-int(size_window[1]/2)]
-            size_window = (659,528)
+            rect = get_window_rect("Remote")
+            if rect:
+                Rw_lt = rect
+                size_window = (rect[2]-rect[0], rect[3]-rect[1])
+            else:
+                raise Exception("window not found")
+        except Exception:
+            Rw_lt = [int(Rs[0])-int(size_window[0]/2), int(Rs[1])-int(size_window[1]/2)]
             print("Missing the window")
         # get pos head
         pos_remote_head = [int(size_window[0]/2),int(size_window[1]/2)]
